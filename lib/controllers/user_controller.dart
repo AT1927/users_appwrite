@@ -40,4 +40,25 @@ class UserController extends GetxController {
       error.value = e.toString();
     }
   }
+
+  Future<void> updateUser(UserModel user) async {
+    try {
+      final updatedUser = await repository.editUser(user);
+      final index = users.indexWhere((u) => u.id == user.id);
+      if (index != -1) {
+        users[index] = updatedUser;
+      }
+    } catch (e) {
+      error.value = e.toString();
+    }
+  }
+
+  Future<void> deleteUser(String userId) async {
+    try {
+      await repository.removeUser(userId);
+      users.removeWhere((user) => user.id == userId);
+    } catch (e) {
+      error.value = e.toString();
+    }
+  }
 }

@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
   final _emailController = TextEditingController();
 
   HomePage({super.key});
-
+  //----------------------------------------------------------------------------
   void _submitUser(UserController controller) {
     if (_formKey.currentState!.validate()) {
       final user = UserModel(
@@ -26,6 +26,98 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  //----------------------------------------------------------------------------
+  void _showEditDialog(
+    BuildContext context,
+    UserController controller,
+    UserModel user,
+  ) {
+    final editUsernameController = TextEditingController(text: user.username);
+    final editEmailController = TextEditingController(text: user.email);
+    final editFormKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Editar Usuario'),
+            content: Form(
+              key: editFormKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: editUsernameController,
+                    decoration: InputDecoration(labelText: 'Username'),
+                    validator:
+                        (value) => value!.isEmpty ? 'Campo requerido' : null,
+                  ),
+                  TextFormField(
+                    controller: editEmailController,
+                    decoration: InputDecoration(labelText: 'Email'),
+                    validator:
+                        (value) => value!.isEmpty ? 'Campo requerido' : null,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (editFormKey.currentState!.validate()) {
+                    final updatedUser = UserModel(
+                      id: user.id,
+                      username: editUsernameController.text,
+                      email: editEmailController.text,
+                    );
+                    controller.updateUser(updatedUser);
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text('Actualizar'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  void _showDeleteDialog(
+    BuildContext context,
+    UserController controller,
+    UserModel user,
+  ) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Eliminar Usuario'),
+            content: Text(
+              '¿Está seguro que desea eliminar a ${user.username}?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancelar'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () {
+                  controller.deleteUser(user.id);
+                  Navigator.pop(context);
+                },
+                child: Text('Eliminar'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,9 +168,52 @@ class HomePage extends StatelessWidget {
                   itemCount: controller.users.length,
                   itemBuilder: (context, index) {
                     final user = controller.users[index];
-                    return ListTile(
-                      title: Text(user.username),
-                      subtitle: Text(user.email),
+                    return Card(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 4.0,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.username,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(user.email),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed:
+                                  () => _showEditDialog(
+                                    context,
+                                    controller,
+                                    user,
+                                  ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              color: Colors.red,
+                              onPressed:
+                                  () => _showDeleteDialog(
+                                    context,
+                                    controller,
+                                    user,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),

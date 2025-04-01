@@ -36,4 +36,31 @@ class UserRepository {
       rethrow;
     }
   }
+
+  Future<UserModel> editUser(UserModel user) async {
+    try {
+      final response = await databases.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.collectionId,
+        documentId: user.id,
+        data: user.toJson(),
+      );
+
+      return UserModel.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeUser(String userId) async {
+    try {
+      await databases.deleteDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.collectionId,
+        documentId: userId,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
