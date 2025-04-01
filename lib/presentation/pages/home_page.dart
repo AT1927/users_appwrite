@@ -121,7 +121,15 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Usuarios con Appwrite')),
+      appBar: AppBar(
+        title: Text('Usuarios con Appwrite'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () => Get.find<UserController>().fetchUsers(),
+          ),
+        ],
+      ),
       body: GetX<UserController>(
         builder: (controller) {
           if (controller.isLoading.value) {
@@ -150,10 +158,12 @@ class HomePage extends StatelessWidget {
                             (value) =>
                                 value!.isEmpty ? 'Campo requerido' : null,
                       ),
+                      SizedBox(height: 20), //Espacio superior con formulario
                       ElevatedButton(
                         onPressed: () => _submitUser(controller),
                         child: Text('Agregar Usuario'),
                       ),
+                      SizedBox(height: 10), //Espacio inferior con listado bd
                     ],
                   ),
                 ),
