@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:users/controllers/user_controller.dart';
 import 'package:users/model/user_model.dart';
+import 'package:users/presentation/pages/user_page.dart';
 
 class HomePage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -183,45 +184,55 @@ class HomePage extends StatelessWidget {
                         horizontal: 8.0,
                         vertical: 4.0,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    user.username,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(user.email),
-                                ],
+                      //Integracion de user_page:
+                      child: InkWell(
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UserPage(user: user),
                               ),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed:
-                                  () => _showEditDialog(
-                                    context,
-                                    controller,
-                                    user,
-                                  ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              color: Colors.red,
-                              onPressed:
-                                  () => _showDeleteDialog(
-                                    context,
-                                    controller,
-                                    user,
-                                  ),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user.username,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(user.email),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed:
+                                    () => _showEditDialog(
+                                      context,
+                                      controller,
+                                      user,
+                                    ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                color: Colors.red,
+                                onPressed:
+                                    () => _showDeleteDialog(
+                                      context,
+                                      controller,
+                                      user,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
